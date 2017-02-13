@@ -37,6 +37,10 @@ public class NonBlockingPublisher implements Runnable {
 
 		List<ThingData> thingList = new ArrayList<ThingData>();
 		rapsBerryData = new RapsBerryData();
+		rapsBerryData.setId("RAPSBERRY-"+idRapsBerry);
+		rapsBerryData.setDate(new Date());
+		rapsBerryData.setLight(new Random().nextInt());
+		rapsBerryData.setValue(new Random().nextInt());
 		
 		rapsBerryData.setId("RAPSBERRY-"+idRapsBerry);
 		
@@ -47,6 +51,18 @@ public class NonBlockingPublisher implements Runnable {
 
 		rapsBerryData.setItems(thingList);
 	}
+
+	private void updateRapsBerryData(RapsBerryData rapsBerryData) {
+		rapsBerryData.setDate(new Date());
+		rapsBerryData.setLight(new Random().nextInt());
+		rapsBerryData.setValue(new Random().nextInt());
+		
+		for (ThingData thing : rapsBerryData.getItems()) {
+			thing.setDate(new Date());
+			thing.setValue(new Random().nextInt());
+		}
+		
+	}
 	
     @Override
     public void run() {
@@ -54,6 +70,7 @@ public class NonBlockingPublisher implements Runnable {
     	initThings(numRapsBerry, numThingsByRapsBerry);
 
         while (true) {
+        	updateRapsBerryData(rapsBerryData);
             String payload = rapsBerryData.writelog();//"hello from non-blocking publisher - " + (counter++);
             AWSIotMessage message = new NonBlockingPublishListener(topic, TestTopicQos, payload);
             try {
@@ -61,6 +78,7 @@ public class NonBlockingPublisher implements Runnable {
             } catch (AWSIotException e) {
                 System.out.println(System.currentTimeMillis() + ": publish failed for " + payload);
             }
+            System.out.println(System.currentTimeMillis() + ": >>> " + payload);
 
             try {
                 Thread.sleep(1000);
@@ -70,4 +88,5 @@ public class NonBlockingPublisher implements Runnable {
             }
         }
     }
+
 }
