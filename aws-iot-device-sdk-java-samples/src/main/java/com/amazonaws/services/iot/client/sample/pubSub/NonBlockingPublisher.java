@@ -53,6 +53,7 @@ public class NonBlockingPublisher implements Runnable {
 	}
 
 	private void updateRapsBerryData(RapsBerryData rapsBerryData) {
+		
 		rapsBerryData.setDate(new Date());
 		rapsBerryData.setLight(new Random().nextInt());
 		rapsBerryData.setValue(new Random().nextInt());

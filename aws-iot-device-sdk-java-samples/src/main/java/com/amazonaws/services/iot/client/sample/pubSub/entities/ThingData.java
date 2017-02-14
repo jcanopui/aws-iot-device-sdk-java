@@ -2,9 +2,12 @@ package com.amazonaws.services.iot.client.sample.pubSub.entities;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class ThingData {
 	
 	private String id;
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm a z")
 	private Date date;
 	private double value;
 
