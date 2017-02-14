@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class ThingData {
 	
 	private String id;
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm a z")
+//	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mmTz")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone="Europe/Madrid")
 	private Date date;
 	private double value;
 

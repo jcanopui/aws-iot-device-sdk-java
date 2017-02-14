@@ -11,7 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RapsBerryData {
 	
 	private String id;
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm a z")
+//	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm a z")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone="Europe/Madrid")
 	private Date date;
 	private int value;
 	private int light;
