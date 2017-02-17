@@ -117,6 +117,7 @@ public class SampleUtil {
             System.out.println("Certificate file not found: " + filename);
             return null;
         }
+        
         try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(file))) {
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
             certificate = certFactory.generateCertificate(stream);

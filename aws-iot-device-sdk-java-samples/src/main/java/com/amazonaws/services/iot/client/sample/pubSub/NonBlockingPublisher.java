@@ -10,7 +10,7 @@ import com.amazonaws.services.iot.client.AWSIotMessage;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.amazonaws.services.iot.client.AWSIotQos;
 import com.amazonaws.services.iot.client.sample.pubSub.entities.RapsBerryData;
-import com.amazonaws.services.iot.client.sample.pubSub.entities.ThingData;
+import com.amazonaws.services.iot.client.sample.pubSub.entities.ThingSensorData;
 
 public class NonBlockingPublisher implements Runnable {
     
@@ -35,17 +35,15 @@ public class NonBlockingPublisher implements Runnable {
 
 	private void initThings(int idRapsBerry, int numThings) {
 
-		List<ThingData> thingList = new ArrayList<ThingData>();
+		List<ThingSensorData> thingList = new ArrayList<ThingSensorData>();
 		rapsBerryData = new RapsBerryData();
 		rapsBerryData.setId("RAPSBERRY-"+idRapsBerry);
 		rapsBerryData.setDate(new Date());
-		rapsBerryData.setLight(new Random().nextInt());
-		rapsBerryData.setValue(new Random().nextInt());
 		
 		rapsBerryData.setId("RAPSBERRY-"+idRapsBerry);
 		
 		for (int i = 0; i < numThings; i++) {
-			ThingData thing = new ThingData("THING-"+i, new Date(), new Random().nextInt());
+			ThingSensorData thing = new ThingSensorData("THING-"+i, new Date(), new Random().nextInt());
 			thingList.add(thing);
 		}
 
@@ -55,10 +53,8 @@ public class NonBlockingPublisher implements Runnable {
 	private void updateRapsBerryData(RapsBerryData rapsBerryData) {
 		
 		rapsBerryData.setDate(new Date());
-		rapsBerryData.setLight(new Random().nextInt());
-		rapsBerryData.setValue(new Random().nextInt());
 		
-		for (ThingData thing : rapsBerryData.getItems()) {
+		for (ThingSensorData thing : rapsBerryData.getItems()) {
 			thing.setDate(new Date());
 			thing.setValue(new Random().nextInt());
 		}

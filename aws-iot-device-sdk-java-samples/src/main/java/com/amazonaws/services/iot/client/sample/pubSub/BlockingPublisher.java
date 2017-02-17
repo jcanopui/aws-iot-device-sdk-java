@@ -8,7 +8,7 @@ import java.util.Random;
 import com.amazonaws.services.iot.client.AWSIotException;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.amazonaws.services.iot.client.sample.pubSub.entities.RapsBerryData;
-import com.amazonaws.services.iot.client.sample.pubSub.entities.ThingData;
+import com.amazonaws.services.iot.client.sample.pubSub.entities.ThingSensorData;
 
 public class BlockingPublisher implements Runnable {
 	
@@ -33,20 +33,29 @@ public class BlockingPublisher implements Runnable {
 
 	private void initThings(int idRapsBerry, int numThings) {
 
-		List<ThingData> thingList = new ArrayList<ThingData>();
+		List<ThingSensorData> thingList = new ArrayList<ThingSensorData>();
 		rapsBerryData = new RapsBerryData();
 		
 		rapsBerryData.setId("RAPSBERRY-"+idRapsBerry);
 		rapsBerryData.setDate(new Date());
-		rapsBerryData.setLight(new Random().nextInt());
-		rapsBerryData.setValue(new Random().nextInt());
 		
 		for (int i = 0; i < numThings; i++) {
-			ThingData thing = new ThingData("THING-"+i, new Date(), new Random().nextInt());
+			ThingSensorData thing = new ThingSensorData("THING-"+i, new Date(), new Random().nextInt());
 			thingList.add(thing);
 		}
 
 		rapsBerryData.setItems(thingList);
+	}
+
+	private void updateRapsBerryData(RapsBerryData rapsBerryData) {
+		
+		rapsBerryData.setDate(new Date());
+		
+		for (ThingSensorData thing : rapsBerryData.getItems()) {
+			thing.setDate(new Date());
+			thing.setValue(new Random().nextInt());
+		}
+		
 	}
 	
     @Override
@@ -55,7 +64,7 @@ public class BlockingPublisher implements Runnable {
         initThings(numRapsBerry, numThingsByRapsBerry);
         
         while (true) {
-        	
+        	updateRapsBerryData(rapsBerryData);
             String payload = rapsBerryData.writelog();//"hello from blocking publisher - " + (counter++);
             try {
                 awsIotClient.publish(topic, payload);

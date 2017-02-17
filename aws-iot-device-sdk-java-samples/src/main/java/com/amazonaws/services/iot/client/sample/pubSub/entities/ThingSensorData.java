@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class ThingData {
+public class ThingSensorData {
 	
 	private String id;
 //	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mmTz")
@@ -13,7 +13,7 @@ public class ThingData {
 	private double value;
 
 
-	public ThingData(String id, Date date, double value) {
+	public ThingSensorData(String id, Date date, double value) {
 		super();
 		this.id = id;
 		this.date = date;
@@ -44,7 +44,7 @@ public class ThingData {
 		this.value = value;
 	}
 
-	public ThingData() {
+	public ThingSensorData() {
 		super();
 	}
 	
