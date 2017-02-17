@@ -34,13 +34,13 @@ import com.amazonaws.services.iot.client.sample.sampleUtil.SampleUtil.KeyStorePa
  */
 public class PublishSubscribeSample {
 
-    private static final String TestTopic = "sdk/test/java";
+    private static final String TestTopic = "topic/LightControl";
     private static final AWSIotQos TestTopicQos = AWSIotQos.QOS0;
 
     private static AWSIotMqttClient awsIotClient;
 
-    private static int numThreads = 1;
-    private static int numRapsBerry = 1;
+    private static int numThreads = 100;
+    private static int numRapsBerry = 100;
     private static int numThingsByRapsBerry = 2;
     
     public static void setClient(AWSIotMqttClient client) {
@@ -91,7 +91,7 @@ public class PublishSubscribeSample {
         executor = Executors.newFixedThreadPool(numThreads);
 		for (int i=0; i<numRapsBerry;i++) {
 //			executor.execute(new Thread(new BlockingPublisher(awsIotClient, TestTopic, numRapsBerry, numThingsByRapsBerry)));
-			executor.execute(new Thread(new NonBlockingPublisher(awsIotClient, TestTopic, numRapsBerry, numThingsByRapsBerry)));
+			executor.execute(new Thread(new NonBlockingPublisher(awsIotClient, TestTopic, i, numThingsByRapsBerry)));
 		}
 		
 

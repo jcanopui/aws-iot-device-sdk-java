@@ -10,7 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RapsBerryData {
 	
-	private String id;
+	private long privateId;
+	private String rasBerryId;
 //	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm a z")
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone="Europe/Madrid")
 	private Date date;
@@ -19,6 +20,7 @@ public class RapsBerryData {
 	
 	public RapsBerryData() {
 		super();
+		privateId = 0;
 		items = new ArrayList<ThingSensorData>(); 
 	}
 	
@@ -36,12 +38,16 @@ public class RapsBerryData {
 		return result;
 	}
 	
-	public String getId() {
-		return id;
+	public String getRasBerryId() {
+		return rasBerryId;
 	}
-	public void setId(String id) {
-		this.id = id;
+
+
+	public void setRasBerryId(String rasBerryId) {
+		this.rasBerryId = rasBerryId;
 	}
+
+
 	public Date getDate() {
 		return date;
 	}
@@ -54,6 +60,15 @@ public class RapsBerryData {
 	}
 	public void setItems(List<ThingSensorData> items) {
 		this.items = items;
+	}
+
+	public long getPrivateId() {
+		return privateId;
+	}
+
+
+	public void setPrivateId(long privateId) {
+		this.privateId = privateId;
 	}
 	
 }

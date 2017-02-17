@@ -12,6 +12,8 @@ import com.amazonaws.services.iot.client.sample.pubSub.entities.ThingSensorData;
 
 public class BlockingPublisher implements Runnable {
 	
+	public static long globalAccount = 0;
+	
     private final AWSIotMqttClient awsIotClient;
 
     private String topic;
@@ -36,7 +38,7 @@ public class BlockingPublisher implements Runnable {
 		List<ThingSensorData> thingList = new ArrayList<ThingSensorData>();
 		rapsBerryData = new RapsBerryData();
 		
-		rapsBerryData.setId("RAPSBERRY-"+idRapsBerry);
+		rapsBerryData.setRasBerryId("RAPSBERRY-"+idRapsBerry);
 		rapsBerryData.setDate(new Date());
 		
 		for (int i = 0; i < numThings; i++) {
@@ -49,6 +51,7 @@ public class BlockingPublisher implements Runnable {
 
 	private void updateRapsBerryData(RapsBerryData rapsBerryData) {
 		
+		rapsBerryData.setPrivateId(globalAccount++);
 		rapsBerryData.setDate(new Date());
 		
 		for (ThingSensorData thing : rapsBerryData.getItems()) {
