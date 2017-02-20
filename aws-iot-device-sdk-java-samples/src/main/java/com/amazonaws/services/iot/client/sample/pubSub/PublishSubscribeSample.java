@@ -34,14 +34,14 @@ import com.amazonaws.services.iot.client.sample.sampleUtil.SampleUtil.KeyStorePa
  */
 public class PublishSubscribeSample {
 
-    private static final String TestTopic = "topic/LightControl";
+    private static final String TestTopic = "topic/LightMeasure";
     private static final AWSIotQos TestTopicQos = AWSIotQos.QOS0;
 
     private static AWSIotMqttClient awsIotClient;
 
-    private static int numThreads = 100;
-    private static int numRapsBerry = 100;
-    private static int numThingsByRapsBerry = 2;
+    private static int numThreads = 10000;
+    private static int numRapsBerry = 10000;
+    private static int numThingsByRapsBerry = 1;
     
     public static void setClient(AWSIotMqttClient client) {
         awsIotClient = client;

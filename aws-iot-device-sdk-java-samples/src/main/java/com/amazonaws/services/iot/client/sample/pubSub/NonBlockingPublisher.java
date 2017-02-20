@@ -27,12 +27,15 @@ public class NonBlockingPublisher implements Runnable {
     private int numRapsBerry = 0;
     private int numThingsByRapsBerry = 0;
     
+    private static Random randomValueGenerator;
+    
     public NonBlockingPublisher(AWSIotMqttClient awsIotClient, String pTopic,
     		int pNumRapsBerry, int pNumThingsByRapsBerry) {
         this.awsIotClient = awsIotClient;
         this.topic = pTopic;
         this.numRapsBerry= pNumRapsBerry;
         this.numThingsByRapsBerry = pNumThingsByRapsBerry;
+        this.randomValueGenerator = new Random();
     }
 
 	private void initThings(int idRapsBerry, int numThings) {
@@ -43,12 +46,16 @@ public class NonBlockingPublisher implements Runnable {
 		rapsBerryData.setRasBerryId("RAPSBERRY-"+idRapsBerry);
 		rapsBerryData.setDate(new Date());
 		
-		for (int i = 0; i < numThings; i++) {
-			ThingSensorData thing = new ThingSensorData("THING-"+i, new Date(), new Random().nextInt());
-			thingList.add(thing);
-		}
+//		for (int i = 0; i < numThings; i++) {
+//			ThingSensorData thing = new ThingSensorData("THING-"+i, new Date(), randomValueGenerator.nextInt(2000));
+//			thingList.add(thing);
+//		}
 
-		rapsBerryData.setItems(thingList);
+		ThingSensorData thing1 = new ThingSensorData("THING-1", new Date(), randomValueGenerator.nextInt(2000));
+		rapsBerryData.setThing1(thing1);
+		ThingSensorData thing2 = new ThingSensorData("THING-2", new Date(), randomValueGenerator.nextInt(2000));
+		rapsBerryData.setThing2(thing2);
+//		rapsBerryData.setItems(thingList);
 	}
 
 	private void updateRapsBerryData(RapsBerryData rapsBerryData) {
@@ -56,10 +63,16 @@ public class NonBlockingPublisher implements Runnable {
 		rapsBerryData.setPrivateId(globalAccount++);
 		rapsBerryData.setDate(new Date());
 		
-		for (ThingSensorData thing : rapsBerryData.getItems()) {
-			thing.setDate(new Date());
-			thing.setValue(new Random().nextInt());
-		}
+//		for (ThingSensorData thing : rapsBerryData.getItems()) {
+//			thing.setDate(new Date());
+//			thing.setValue(new Random().nextInt(2000));
+//		}
+		
+		rapsBerryData.getThing1().setDate(new Date());
+		rapsBerryData.getThing1().setValue(randomValueGenerator.nextInt(2000));
+		
+		rapsBerryData.getThing2().setDate(new Date());
+		rapsBerryData.getThing2().setValue(randomValueGenerator.nextInt(2000));
 		
 	}
 	
