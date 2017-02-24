@@ -1,0 +1,23 @@
+{
+  "name": "lux-meter-device",
+  "version": "0.0.0",
+  "description": "LuxMeterDevice",
+  "main": "app.js",
+  "author": {
+    "name": "dvilaspe"
+  },
+  "dependencies": {
+    "mqtt": "^2.3.0",
+    "body-parser": "^1.4.3",
+    "consolidate": "^0.10.0",
+    "express": "^4.4.1",
+    "express-ws": "^2.0.0",
+    "method-override": "^2.1.1",
+    "swig": "^1.4.1",
+    "websocket": "1.0.24",
+    "ws": "1.1.1",
+    "lodash": "^4.17.4",
+    "rpi-gpio": "^0.7.0",
+    "aws-iot-device-sdk": "^1.0.14"
+  }
+}
