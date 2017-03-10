@@ -1,20 +1,21 @@
 ﻿const deviceModule = require('aws-iot-device-sdk').device;
 var ProxyAgent = require('proxy-agent');
 
-//device.subscribe('LightMeasure');
+/*device.subscribe('topic/LightControl');
 
-/*client.on('message', function (topic, message) {
+client.on('message', function (topic, message) {
     // message is Buffer 
     console.log(message.toString())
     client.end()
 })
 */
+
 var AwsMqttClient = function AwsMqttClient(opts) {
     this.opts = opts;
     return this;
 }
 
-AwsMqttClient.prototype.init = function MqttClient(){
+AwsMqttClient.prototype.init = function MqttClient(lightCB){
     console.log("Init ThisMqttClient");
  
     thisclient = this.client = deviceModule({
@@ -30,15 +31,16 @@ AwsMqttClient.prototype.init = function MqttClient(){
         host: 'a37hc7nazelgx0.iot.us-west-2.amazonaws.com',
         debug: true,
         //AWS_ACCESS_KEY_ID
-        accessKeyId: 'AKIAJZYKPOHGIRSJRAGA',
+		accessKeyId: 'XXXXXXXXXXXXXXXXXXXX',
         //AWS_SECRET_ACCESS_KEY
-        secretKey: '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',
-        websocketOptions: { agent: new ProxyAgent('http://10.121.8.100:8080') }
+        secretKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+//        websocketOptions: { agent: new ProxyAgent('http://10.121.8.100:8080') }
     });
 
     thisclient
         .on('connect', function () {
             console.log('connect');
+            thisclient.subscribe('topic/LightControl');
         });
     thisclient
         .on('close', function () {
@@ -58,7 +60,9 @@ AwsMqttClient.prototype.init = function MqttClient(){
         });
     thisclient
         .on('message', function (topic, payload) {
-            console.log('message', topic, payload.toString());
+	    var jsonStr = JSON.parse(payload.toString());
+            console.log('message', topic, jsonStr.thing1.action);
+            setImmediate(lightCB,jsonStr.thing1.action);
         });
 }
 

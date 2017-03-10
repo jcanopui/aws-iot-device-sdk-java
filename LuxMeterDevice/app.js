@@ -25,10 +25,11 @@ led.init(function toogleLed(param) {
     led.toggle();
 });
 iotHub.init(function ligthCB(value) {
-    led.set(value.lightOn);
+    led.set(value);
 });
 
 server.listen();
+
 /*
 if (!fs.existsSync(fileOut)) {
     console.log('No existe');
@@ -52,8 +53,13 @@ function cbReadSecond(secondData) {
     secondMgr.pushSensorData(secondData, cbRead20Second);
     wsData = { type: 'Second', data: secondData };
     server.pushData(wsData);
-    //led.toggle();
     today = new Date();
+    
+    //if(secondData.value < 300){
+    //	led.setOn();
+    //}else{
+    //  led.setOff();
+    //}
     iOtData = {
         id: 'raspi1',
         date: today.toISOString(),
