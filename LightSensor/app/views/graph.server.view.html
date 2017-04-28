@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3/Websockets Experiment</title>
+    <style type="text/css">
+      .chart rect {
+        fill: steelblue;
+        stroke: white;
+      }
+      .line {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1.5px;
+      }
+    </style>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+      <script src="http://code.highcharts.com/highcharts.js"></script> 
+    <script>
+        $(document).ready(function () {
+            var location = window.location;
+            var wsServer = 'ws://' + location.hostname + ':' + location.port + '/';
+        var Socket = "MozWebSocket" in window ? MozWebSocket : WebSocket;
+        var ws = new Socket(wsServer);
+
+
+        var chart20s;
+        chart20s = new Highcharts.Chart({
+            chart: {
+                renderTo: 'chart20s',
+                defaultSeriesType: 'spline',
+            },
+            rangeSelector: {
+                selected: 100
+            },
+            title: {
+                text: 'Lux @ Raspberry Pi (2 minutes /20 seconds)'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150,
+                maxZoom: 20 * 1000
+            },
+            yAxis: {
+                minPadding: 0.2,
+                maxPadding: 0.2,
+                title: {
+                    text: 'Lux',
+                    margin: 80
+                }
+            },
+            series: [{
+                name: 'Lux @ 20 secs',
+                data: []
+            },{
+                name: 'Lux @ 1 secs',
+                data: []
+            
+            }]
+        });
+
+        var chartrt;
+        chartrt = new Highcharts.Chart({
+            chart: {
+                renderTo: 'chartrt',
+                defaultSeriesType: 'spline',
+            },
+            rangeSelector: {
+                selected: 100
+            },
+            title: {
+                text: 'lux Raspberry Pi 30 seconds RealTime'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150,
+                maxZoom: 20 * 1000
+            },
+            yAxis: {
+                minPadding: 0.2,
+                maxPadding: 0.2,
+                title: {
+                    text: 'Lux',
+                    margin: 80
+                }
+            },
+            series: [{
+                name: 'Lux @ fs',
+                data: []
+            }, {
+                name: 'Lux @ 1 secs',
+                data: []
+
+            }]
+        });
+
+        function addpoint(series, data, limit) {
+           theDate = data.date;
+           theDate = new Date(theDate);
+            //date.setTime(date * 1000);
+           //console.log(theDate);
+            if(series.data.length < limit){
+                series.addPoint([theDate.getTime(), data.value]);
+            }else{
+                series.addPoint([theDate.getTime(), data.value], true, true);
+            }
+        }
+        const limit20Sec = 6; //2 minutos
+        ws.onmessage = function (evt) {
+          var data = $.parseJSON(evt.data);
+          var series20 = chart20s.series[0];
+          var series1 = chart20s.series[1];
+          var seriesrt1 = chartrt.series[1];
+          var seriesrt = chartrt.series[0];
+          if (!series20) return;
+
+          /*if (data.type == 'RT') {
+              addpoint(seriesrt, data.data, 5*30);
+          }*/
+          if (data.type == 'Second') {
+              for (i = 0; i < data.data.samples.length; i++) {
+                  sample1 = data.data.samples[i];
+                  addpoint(seriesrt, sample1, 5 * 30);
+              }
+              addpoint(seriesrt1, data.data, 30);
+              addpoint(series1, data.data, limit20Sec * 20);
+          }
+          if (data.type == '20Second') {
+              addpoint(series20, data.data, limit20Sec, 20);
+           /*   for (i = 0; i < data.data.samples.length; i++) {
+                  sample1 = data.data.samples[i];
+                  addpoint(seriesrt, sample1, 5 * 20);
+              }*/
+          }
+          /*
+          addpoint(series20, data, limit20Sec)
+
+          for (i = 0; i < data.samples.length; i++) {
+              sample1 = data.samples[i];
+              addpoint(series1, sample1, limit20Sec * 20);
+              addpoint(seriesrt1, sample1, 20);
+              
+              for (j = 0; j < sample1.samples.length; j++) {
+                  sampleRt = sample1.samples[j];
+                  addpoint(seriesrt, sampleRt, 20 * 5);
+              }
+          }
+          */
+
+        };
+        ws.onclose = function() {
+          console.log("Socket connection closed");
+        };
+        ws.onopen = function() {
+          console.log('Connected');
+        };
+        function generateData() {
+          var value = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+          return {
+            id: (new Date() / 1000) + "-" + value + "-" + (Math.floor(Math.random() * (1000 - 1 + 1)) + 1),
+            value: value,
+          };
+        }
+        $('button').click(function (e) {
+          ws.send(JSON.stringify(generateData()));
+        });
+      });
+    </script>
+  </head>
+  <body>
+      <div id="chart20s" style="width:100%; height:400px;"></div>
+      <div id="chartrt" style="width:100%; height:400px;"></div>
+      <button>Send data</button>
+  </body>
+</html>

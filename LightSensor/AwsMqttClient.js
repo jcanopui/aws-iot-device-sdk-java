@@ -1,21 +1,12 @@
 ﻿const deviceModule = require('aws-iot-device-sdk').device;
 var ProxyAgent = require('proxy-agent');
 
-/*device.subscribe('topic/LightControl');
-
-client.on('message', function (topic, message) {
-    // message is Buffer 
-    console.log(message.toString())
-    client.end()
-})
-*/
-
 var AwsMqttClient = function AwsMqttClient(opts) {
     this.opts = opts;
     return this;
 }
 
-AwsMqttClient.prototype.init = function MqttClient(lightCB){
+AwsMqttClient.prototype.init = function MqttClient(){
     console.log("Init ThisMqttClient");
  
     thisclient = this.client = deviceModule({
@@ -40,7 +31,6 @@ AwsMqttClient.prototype.init = function MqttClient(lightCB){
     thisclient
         .on('connect', function () {
             console.log('connect');
-            thisclient.subscribe('$aws/things/Raspi1/shadow/update/accepted');
         });
     thisclient
         .on('close', function () {
@@ -69,9 +59,8 @@ AwsMqttClient.prototype.init = function MqttClient(lightCB){
 
 AwsMqttClient.prototype.sendData = function mqttSendData(data) {
     str = JSON.stringify(data);
-    this.client.publish('topic/LightMeasure/Raspi1',str );
+    this.client.publish('topic/LightMeasure/'+data.id,str );
     console.log("Sended:", str.length, "Bytes");
-//    console.log("Message sent: ", str);
 }
 
 module.exports = AwsMqttClient;

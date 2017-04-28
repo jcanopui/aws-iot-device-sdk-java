@@ -1,14 +1,5 @@
-﻿const deviceModule = require('aws-iot-device-sdk').device;
+const deviceModule = require('aws-iot-device-sdk').device;
 var ProxyAgent = require('proxy-agent');
-
-/*device.subscribe('topic/LightControl');
-
-client.on('message', function (topic, message) {
-    // message is Buffer 
-    console.log(message.toString())
-    client.end()
-})
-*/
 
 var AwsMqttClient = function AwsMqttClient(opts) {
     this.opts = opts;
@@ -40,7 +31,9 @@ AwsMqttClient.prototype.init = function MqttClient(lightCB){
     thisclient
         .on('connect', function () {
             console.log('connect');
+            thisclient.subscribe('$aws/things/Raspi1/shadow/get/accepted');
             thisclient.subscribe('$aws/things/Raspi1/shadow/update/accepted');
+			thisclient.publish('$aws/things/Raspi1/shadow/get','{}');
         });
     thisclient
         .on('close', function () {
@@ -65,13 +58,6 @@ AwsMqttClient.prototype.init = function MqttClient(lightCB){
 //          console.log('message', topic, jsonStr.thing1.action);
             setImmediate(lightCB,jsonStr.state.desired.ledValue);
         });
-}
-
-AwsMqttClient.prototype.sendData = function mqttSendData(data) {
-    str = JSON.stringify(data);
-    this.client.publish('topic/LightMeasure/Raspi1',str );
-    console.log("Sended:", str.length, "Bytes");
-//    console.log("Message sent: ", str);
 }
 
 module.exports = AwsMqttClient;
