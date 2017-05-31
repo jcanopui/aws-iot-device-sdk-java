@@ -2,7 +2,7 @@
  var fs = require("fs");
  var iot = new AWS.Iot({endpoint: "iot.us-east-1.amazonaws.com", accessKeyId: "", secretAccessKey: "", region: "us-east-1" });
  module.exports={
-    createThing: function(thingName,csrLoc,certLoc, resultCallback){
+    createThing: function(thingName,csrLoc,certLoc, data, resultCallback){
       var thingArn="none";
       var callbackLocal= function(err){
         if(err){
@@ -19,13 +19,13 @@
       console.log(csr);
       createCertificate(csr).then((certArn)=>{
           
-            console.log("CertArn"+certArn.certificateArn);
-            createThingAWS(thingName)
+            console.log("CertArn "+certArn);
+            createThingAWS(thingName, data)
             .then((retThingArn)=>{
                 thingArn=retThingArn;
                 console.log("ARNVar:"+thingArn);
-                attachPrincipal(thingName,certArn.certificateArn)
-                    doAssociatePolicy(certArn.certificateArn)
+                attachPrincipal(thingName,certArn)
+                    doAssociatePolicy(certArn)
                       .then((data)=>{resultCallback(null,retThingArn);})
                       .catch(callbackLocal);
                 })
@@ -53,10 +53,13 @@
         });
       });
   };
-  var createThingAWS= function(thingName){
+  var createThingAWS= function(thingName, data){
+    var pos = data.lattitude + ":" + data.longitude;
+    
     var params = {
       thingName: thingName,
-      attributePayload: {merge: false}
+      attributePayload: {attributes:{"type": data.type, "pos": pos, "region": data.region},
+      merge: false}
     };
           
     return new Promise((fulfill,reject)=>{
@@ -104,4 +107,5 @@ var doAssociatePolicy= function(principal){
                     });
                   });
 };
+
 
